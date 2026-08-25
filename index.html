@@ -153,7 +153,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
   @media (max-width:1000px){
     .escena, .escena-ops{ grid-template-columns:1fr; gap:0; }
     .escena-fija{
-      top:0; z-index:5; padding:12px 0 18px; text-align:center;
+      top:0; z-index:5; padding:12px 0 18px;
       background:linear-gradient(180deg, var(--papel) 0%, var(--papel) 82%, transparent);
     }
     .telefono{ margin:0 auto; }
@@ -211,7 +211,13 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
   /* en pantalla chica el teléfono se achica de verdad, no con escala,
      para que quepa junto al relato sin desbordar el ancho */
   @media (max-width:1000px){
-    .telefono{ width:292px; height:600px; border-radius:44px; padding:8px; }
+    /* el alto se ata al de la ventana para que siempre quede sitio al texto
+       que va debajo; el ancho conserva la proporción del aparato */
+    .telefono{
+      height:clamp(430px, 62vh, 600px);
+      width:calc(clamp(430px, 62vh, 600px) * 0.4867);
+      border-radius:44px; padding:8px;
+    }
     .tel-pantalla{ border-radius:37px; }
     .isla{ width:84px; height:25px; top:9px; }
     .barra-est{ height:44px; padding:12px 22px 0; font-size:12px; }
@@ -525,12 +531,44 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
   .zona .z-c{ font-size:13px; text-align:right; color:var(--luz-2); }
 
   @media (max-width:1000px){
-    .ops-cuerpo{ grid-template-columns:1fr; }
-    .ops-mapa{ min-height:300px; }
-    .ops-cola{ border-left:none; border-top:1px solid var(--linea-ops); max-height:290px; }
-    .ops-doc{ grid-template-columns:1fr; gap:24px; padding:22px; }
+    /* en pantalla angosta la consola se compacta para que el texto del paso
+       siga cabiendo debajo de ella */
+    .ops-lienzo{ min-height:0; }
+    .ops-cuerpo{ grid-template-columns:1fr; min-height:0; }
+    .ops-mapa{ min-height:0; height:172px; }
+    .ops-cola{ border-left:none; border-top:1px solid var(--linea-ops); max-height:156px; }
+    .ops-barra{ padding:10px 14px; }
+    .ops-marca .nm{ font-size:12px; }
+    .ops-marca .sb, .ops-usr{ font-size:10px; }
+    .ops-doc{ grid-template-columns:1fr; gap:14px; padding:16px 16px 18px; max-height:44vh; overflow:hidden; }
+    .ops-h1{ font-size:17px; }
+    .ops-folio{ font-size:10.5px; margin-bottom:14px; }
+    .ops-rejilla{ gap:12px 16px; }
+    .ops-celda .v{ font-size:13px; }
+    .ops-celda .v.mono{ font-size:12px; }
+    .ops-celda .k{ font-size:8.5px; }
+    .ops-celda .s{ font-size:10.5px; }
     .cifras{ grid-template-columns:1fr 1fr; }
-    .cifra{ border-bottom:1px solid var(--linea-ops); }
+    .cifra{ border-bottom:1px solid var(--linea-ops); padding:14px 14px; }
+    .cifra .n{ font-size:24px; }
+    .cifra .l{ font-size:9.5px; margin-top:5px; }
+    .cifra .c{ font-size:9.5px; }
+    .senal{ padding:9px 0; }
+    .senal .s-t{ font-size:12.5px; }
+    .senal .s-d{ font-size:10.5px; }
+    .lampara{ padding:14px 15px; }
+    .lampara-nota{ font-size:11px; margin-bottom:12px; }
+    .tabla th{ font-size:8.5px; }
+    .tabla td{ font-size:11.5px; padding:8px 8px 8px 0; }
+    .hist div{ padding:10px 12px; }
+    .hist .n{ font-size:18px; }
+    .hist .l{ font-size:8.5px; }
+    .b-ops{ padding:8px 14px; font-size:11.5px; }
+    .zona{ padding:6px 0; }
+    .zona .z-n{ font-size:11.5px; }
+    .reserva{ font-size:10px; padding:10px 12px; }
+    .ops-pant[data-o="10"] .ops-doc > *:last-child{ order:-1; }
+    .ops-foto-pie{ font-size:9.5px; padding:7px 10px; }
   }
   @media (max-width:700px){
     .marca-mapa .rot{ display:none; }
@@ -1155,9 +1193,18 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
       var bloques = cont.children;
       if (!bloques.length) return;
 
-      // se mide contra el tercio superior, no contra el centro: así el bloque
-      // activo queda a la altura de la cabecera de la pieza que acompaña
-      var centro = window.innerHeight * 0.34;
+      // Dónde se considera que un bloque "está en turno". En pantalla ancha
+      // es el tercio superior, a la altura de la cabecera de la pieza. En
+      // pantalla angosta la pieza queda pegada arriba y tapa esa zona, así
+      // que el punto baja hasta la franja libre que queda debajo de ella.
+      var fija = cont.parentNode.querySelector('.escena-fija');
+      var punto = window.innerHeight * 0.34;
+      if (fija && window.innerWidth <= 1000){
+        var abajoFija = fija.getBoundingClientRect().bottom;
+        punto = abajoFija + Math.max(60, (window.innerHeight - abajoFija) * 0.42);
+      }
+
+      var centro = punto;
       var mejor = null, menor = Infinity;
       for (var i = 0; i < bloques.length; i++){
         var r = bloques[i].getBoundingClientRect();
