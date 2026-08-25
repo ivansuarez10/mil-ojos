@@ -113,34 +113,68 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
   .sec-texto{ font-size:1rem; color:var(--tinta-2); max-width:64ch; margin:0 0 34px; }
 
   /* ============ BANCO DE TRABAJO ============ */
-  .banco{ display:grid; grid-template-columns:auto minmax(250px, 380px); gap:44px; align-items:start; }
-  @media (max-width:900px){ .banco{ grid-template-columns:1fr; gap:28px; justify-items:center; } }
+  /* escena: la pieza queda fija mientras el relato pasa al lado */
+  .escena{ display:grid; grid-template-columns:auto minmax(300px, 420px); gap:56px; align-items:start; }
+  .escena-ops{ grid-template-columns:minmax(0,1fr) minmax(280px, 360px); gap:48px; }
+  .escena-fija{ position:sticky; top:56px; }
 
-  .banco-ops{ display:grid; grid-template-columns:minmax(0,1fr) 240px; gap:34px; align-items:start; }
-  @media (max-width:1000px){ .banco-ops{ grid-template-columns:1fr; gap:26px; } }
-
-  /* ---- índice de pasos ---- */
-  .indice{ padding-top:6px; }
-  @media (max-width:900px){ .indice{ width:100%; max-width:420px; } }
-  .indice-tit{ font-size:10px; font-weight:700; color:var(--tinta-3); margin-bottom:12px; }
-  .paso{
-    display:grid; grid-template-columns:26px 1fr; gap:12px; align-items:baseline;
-    width:100%; padding:10px 12px 10px 9px;
-    border-bottom:1px solid var(--trama);
-    transition:background .18s cubic-bezier(.16,1,.3,1), transform .18s cubic-bezier(.16,1,.3,1);
+  .escena-relato{ padding:22vh 0 30vh; }
+  .rel{
+    padding:0 0 0 26px; margin-bottom:20vh; position:relative;
+    opacity:.32; transition:opacity .5s cubic-bezier(.16,1,.3,1);
   }
-  .paso:hover{ background:var(--papel-hondo); transform:translateX(4px); }
-  .paso:focus-visible{ outline:2px solid var(--azul); outline-offset:-2px; }
-  .paso .p-n{ font-size:12px; color:var(--tinta-3); font-weight:700; }
-  .paso .p-t{ font-size:14.5px; font-weight:500; color:var(--tinta-2); }
-  .paso .p-d{ font-size:12px; color:var(--tinta-3); margin-top:2px; display:none; line-height:1.45; }
-  .paso.on{ background:var(--papel-alto); box-shadow:inset 3px 0 0 var(--azul); }
-  .paso.on .p-n{ color:var(--azul); }
-  .paso.on .p-t{ color:var(--tinta); font-weight:700; }
-  .paso.on .p-d{ display:block; }
+  .rel:last-child{ margin-bottom:0; }
+  .rel::before{
+    content:''; position:absolute; left:0; top:7px; bottom:0; width:2px;
+    background:var(--trama-fuerte); transition:background .5s ease;
+  }
+  .rel.on{ opacity:1; }
+  .rel.on::before{ background:var(--azul); }
+  .rel-n{
+    font-family:'Courier Prime', monospace; font-size:12px; font-weight:700;
+    color:var(--tinta-3); letter-spacing:.1em; margin-bottom:9px;
+    transition:color .5s ease;
+  }
+  .rel.on .rel-n{ color:var(--azul); }
+  .rel-t{
+    font-size:clamp(1.35rem, 1.1rem + 1vw, 1.85rem); font-weight:700;
+    letter-spacing:-0.028em; line-height:1.14; margin:0 0 10px; text-wrap:balance;
+  }
+  .rel-d{ font-size:1rem; color:var(--tinta-2); line-height:1.62; margin:0; max-width:44ch; }
+
+  @media (prefers-reduced-motion: reduce){
+    .rel{ opacity:1; transition:none; }
+    .rel::before{ transition:none; }
+  }
+
+  @media (max-width:1000px){
+    .escena, .escena-ops{ grid-template-columns:1fr; gap:0; }
+    .escena-fija{
+      top:0; z-index:5; padding:12px 0 18px; text-align:center;
+      background:linear-gradient(180deg, var(--papel) 0%, var(--papel) 82%, transparent);
+    }
+    .telefono{ margin:0 auto; }
+    .escena-relato{ padding:6px 0 40px; }
+    .rel{ margin-bottom:52vh; }
+    .rel:last-child{ margin-bottom:12vh; }
+  }
+
+  /* cierre */
+  .cierre{ background:var(--azul); color:#fff; margin-top:70px; }
+  .cierre-in{ max-width:1180px; margin:0 auto; padding:74px 28px 82px; }
+  .cierre-tit{
+    font-size:clamp(1.9rem, 1.4rem + 2.2vw, 3rem); font-weight:800;
+    letter-spacing:-0.035em; margin:0 0 44px; text-wrap:balance;
+  }
+  .cierre-rej{ display:grid; grid-template-columns:repeat(4, 1fr); gap:2px; background:rgba(255,255,255,.2); }
+  .cierre-it{ background:var(--azul); padding:26px 24px 30px; }
+  .cierre-n{ font-size:1.06rem; font-weight:700; letter-spacing:-0.015em; margin-bottom:11px; }
+  .cierre-it p{ font-size:.9rem; line-height:1.6; color:rgba(255,255,255,.76); margin:0; }
+  @media (max-width:900px){ .cierre-rej{ grid-template-columns:1fr 1fr; } }
+  @media (max-width:560px){ .cierre-rej{ grid-template-columns:1fr; } .cierre-in{ padding:52px 20px 58px; } }
+
 
   /* ---- teléfono ---- */
-  .tel-zona{ display:flex; flex-direction:column; align-items:center; gap:18px; }
   .telefono{
     position:relative; width:376px; height:770px; flex-shrink:0;
     background:linear-gradient(148deg, #3f4a44, #222b26 34%, #2f3a34 62%, #1b2320);
@@ -171,10 +205,21 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
     position:absolute; bottom:8px; left:50%; transform:translateX(-50%);
     width:136px; height:5px; border-radius:3px; background:var(--tinta); opacity:.28; z-index:25;
   }
-  @media (max-width:460px){
-    .telefono{ width:328px; height:672px; border-radius:48px; padding:9px; }
-    .tel-pantalla{ border-radius:40px; }
-    .isla{ width:94px; height:27px; }
+  /* en pantalla chica el teléfono se achica de verdad, no con escala,
+     para que quepa junto al relato sin desbordar el ancho */
+  @media (max-width:1000px){
+    .telefono{ width:292px; height:600px; border-radius:44px; padding:8px; }
+    .tel-pantalla{ border-radius:37px; }
+    .isla{ width:84px; height:25px; top:9px; }
+    .barra-est{ height:44px; padding:12px 22px 0; font-size:12px; }
+    .cuerpo{ padding:0 19px; }
+    .pie{ padding:11px 19px 22px; }
+    .app-tit{ font-size:21px; }
+    .app-sub{ font-size:13px; margin-bottom:16px; }
+    .home-ind{ width:110px; height:4px; bottom:6px; }
+    .tel-boton.vol-a{ top:132px; height:44px; }
+    .tel-boton.vol-b{ top:186px; height:44px; }
+    .tel-boton.pow{ top:164px; height:70px; }
   }
 
   /* pantallas de la app */
@@ -508,13 +553,13 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
   </div>
 </header>
 
-<section class="seccion">
+<section class="seccion" id="vecino">
   <div class="sec-num caps">Parte uno</div>
   <h2 class="sec-titulo">Lo que ve el vecino</h2>
-  <p class="sec-texto">Ocho pantallas, desde que instala la aplicación hasta que recibe el reconocimiento por una denuncia resuelta. Tocá cualquier paso de la lista o los botones del teléfono para recorrerlo.</p>
+  <p class="sec-texto">Ocho pantallas, desde que instala la aplicación hasta que recibe el reconocimiento por una denuncia resuelta. La pantalla del teléfono va cambiando conforme usted avanza.</p>
 
-  <div class="banco">
-    <div class="tel-zona">
+  <div class="escena">
+    <div class="escena-fija">
       <div class="telefono">
         <div class="tel-boton vol-a"></div>
         <div class="tel-boton vol-b"></div>
@@ -740,20 +785,18 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
       </div>
     </div>
 
-    <div class="indice">
-      <div class="indice-tit caps">Recorrido del vecino</div>
-      <div id="indiceApp"></div>
-    </div>
+    <div class="escena-relato" id="relatoApp"></div>
   </div>
 </section>
 
-<section class="seccion seccion-borde" style="margin-top:60px">
+<section class="seccion seccion-borde" id="alcaldia" style="margin-top:60px">
   <div class="sec-num caps">Parte dos</div>
   <h2 class="sec-titulo">Lo que ve la alcaldía</h2>
   <p class="sec-texto">Seis pantallas de la consola donde el personal municipal monitorea, valida y despacha. Aquí es donde la denuncia deja de ser un aviso y se vuelve un expediente con responsable y fecha.</p>
 
-  <div class="banco-ops">
-    <div class="escritorio">
+  <div class="escena escena-ops">
+    <div class="escena-fija">
+      <div class="escritorio">
       <div class="nav-mac">
         <i></i><i></i><i></i>
         <span class="nav-url mono">consola.1000ojos.hn</span>
@@ -1004,9 +1047,30 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
       </div>
     </div>
 
-    <div class="indice">
-      <div class="indice-tit caps">Pantallas de la consola</div>
-      <div id="indiceOps"></div>
+    <div class="escena-relato" id="relatoOps"></div>
+  </div>
+</section>
+
+<section class="cierre">
+  <div class="cierre-in">
+    <h2 class="cierre-tit">Lo que gana el municipio</h2>
+    <div class="cierre-rej">
+      <div class="cierre-it">
+        <div class="cierre-n">Responde antes</div>
+        <p>La emergencia entra ubicada en el mapa y con fotografía, sin depender de una llamada que hay que interpretar.</p>
+      </div>
+      <div class="cierre-it">
+        <div class="cierre-n">Queda constancia</div>
+        <p>Cada denuncia es un expediente con folio, hora, responsable asignado y fecha de cierre. Sirve para rendir cuentas.</p>
+      </div>
+      <div class="cierre-it">
+        <div class="cierre-n">No pierde el tiempo</div>
+        <p>Las señales de la revisión automática le dicen al operador qué mirar dos veces, sin descartar por él.</p>
+      </div>
+      <div class="cierre-it">
+        <div class="cierre-n">No deja a nadie fuera</div>
+        <p>Quien no tiene teléfono inteligente sigue reportando por mensaje de texto, y entra a la misma consola.</p>
+      </div>
     </div>
   </div>
 </section>
@@ -1038,24 +1102,19 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 
   function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-  function pintarIndice(cont, pasos, base, fn){
+  // El relato son secciones de texto; al entrar cada una en vista, la pieza
+  // fija de al lado cambia a la pantalla que le corresponde.
+  function pintarRelato(contId, pasos, base){
     var h = '';
     for (var i = 0; i < pasos.length; i++){
       var n = base + i;
-      h += '<button class="paso' + (i===0 ? ' on' : '') + '" data-i="' + n + '" onclick="' + fn + '(' + n + ')">' +
-             '<span class="p-n mono">' + (n < 10 ? '0' + n : n) + '</span>' +
-             '<span><span class="p-t">' + esc(pasos[i][0]) + '</span>' +
-             '<span class="p-d">' + esc(pasos[i][1]) + '</span></span>' +
-           '</button>';
+      h += '<section class="rel' + (i===0 ? ' on' : '') + '" data-n="' + n + '" tabindex="-1">' +
+             '<div class="rel-n">' + (n < 10 ? '0' + n : n) + '</div>' +
+             '<h3 class="rel-t">' + esc(pasos[i][0]) + '</h3>' +
+             '<p class="rel-d">' + esc(pasos[i][1]) + '</p>' +
+           '</section>';
     }
-    document.getElementById(cont).innerHTML = h;
-  }
-
-  function marcar(contId, n){
-    var b = document.querySelectorAll('#' + contId + ' .paso');
-    for (var i = 0; i < b.length; i++){
-      b[i].className = 'paso' + (parseInt(b[i].getAttribute('data-i'),10) === n ? ' on' : '');
-    }
+    document.getElementById(contId).innerHTML = h;
   }
 
   function irApp(n){
@@ -1063,7 +1122,6 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
     for (var i = 0; i < p.length; i++){
       p[i].className = 'pant' + (parseInt(p[i].getAttribute('data-p'),10) === n ? ' on' : '');
     }
-    marcar('indiceApp', n);
   }
 
   function irOps(n){
@@ -1071,9 +1129,52 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
     for (var i = 0; i < p.length; i++){
       p[i].className = 'ops-pant' + (parseInt(p[i].getAttribute('data-o'),10) === n ? ' on' : '');
     }
-    marcar('indiceOps', n);
   }
 
-  pintarIndice('indiceApp', PASOS_APP, 1, 'irApp');
-  pintarIndice('indiceOps', PASOS_OPS, 9, 'irOps');
+  pintarRelato('relatoApp', PASOS_APP, 1);
+  pintarRelato('relatoOps', PASOS_OPS, 9);
+
+  // La pieza fija sigue al relato: en cada cuadro se elige el bloque cuyo
+  // centro queda más cerca del centro de la pantalla y se muestra la pantalla
+  // que le toca. Se hace por cálculo directo para que el comportamiento sea
+  // idéntico en cualquier navegador.
+  var activo = { relatoApp: 0, relatoOps: 0 };
+
+  function sincronizar(){
+    ['relatoApp', 'relatoOps'].forEach(function(id){
+      var cont = document.getElementById(id);
+      if (!cont) return;
+      var bloques = cont.children;
+      if (!bloques.length) return;
+
+      var centro = window.innerHeight / 2;
+      var mejor = null, menor = Infinity;
+      for (var i = 0; i < bloques.length; i++){
+        var r = bloques[i].getBoundingClientRect();
+        var d = Math.abs((r.top + r.bottom) / 2 - centro);
+        if (d < menor){ menor = d; mejor = bloques[i]; }
+      }
+      if (!mejor) return;
+
+      var n = parseInt(mejor.getAttribute('data-n'), 10);
+      if (activo[id] === n) return;
+      activo[id] = n;
+
+      for (var j = 0; j < bloques.length; j++){
+        bloques[j].className = 'rel' + (bloques[j] === mejor ? ' on' : '');
+      }
+      if (id === 'relatoApp') irApp(n); else irOps(n);
+    });
+  }
+
+  var pendiente = false;
+  function alDesplazar(){
+    if (pendiente) return;
+    pendiente = true;
+    requestAnimationFrame(function(){ pendiente = false; sincronizar(); });
+  }
+
+  window.addEventListener('scroll', alDesplazar, { passive: true });
+  window.addEventListener('resize', alDesplazar);
+  sincronizar();
 </script>
