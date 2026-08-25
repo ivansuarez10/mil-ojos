@@ -118,11 +118,14 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
   .escena-ops{ grid-template-columns:minmax(0,1fr) minmax(280px, 360px); gap:48px; }
   .escena-fija{ position:sticky; top:56px; }
 
-  .escena-relato{ padding:22vh 0 30vh; }
+  /* el primer bloque arranca a la altura de la pieza fija; el resto de la
+     altura del relato es lo que da recorrido al scroll */
+  .escena-relato{ padding:0 0 26vh; }
   .rel{
-    padding:0 0 0 26px; margin-bottom:20vh; position:relative;
+    padding:0 0 0 26px; margin-bottom:26vh; position:relative;
     opacity:.32; transition:opacity .5s cubic-bezier(.16,1,.3,1);
   }
+  .rel:first-child{ margin-top:16px; }
   .rel:last-child{ margin-bottom:0; }
   .rel::before{
     content:''; position:absolute; left:0; top:7px; bottom:0; width:2px;
@@ -235,42 +238,46 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
   .cuerpo::-webkit-scrollbar{ width:0; }
   .pie{ flex-shrink:0; padding:14px 26px 30px; }
 
-  .app-tit{ font-size:25px; font-weight:800; letter-spacing:-0.03em; line-height:1.1; margin:0 0 8px; text-wrap:balance; }
-  .app-sub{ font-size:14.5px; color:var(--tinta-2); margin:0 0 22px; line-height:1.5; }
-  .app-et{ font-size:9.5px; font-weight:700; color:var(--tinta-3); margin-bottom:7px; }
+  .app-tit{ font-size:26px; font-weight:700; letter-spacing:-0.038em; line-height:1.12; margin:0 0 9px; text-wrap:balance; }
+  .app-sub{ font-size:14.5px; color:var(--tinta-2); margin:0 0 24px; line-height:1.58; letter-spacing:-0.006em; }
+  .app-et{ font-size:10px; font-weight:700; color:var(--tinta-3); margin-bottom:8px; }
 
   .btn{
-    display:block; width:100%; padding:16px 20px; text-align:center;
-    font-size:16px; font-weight:700; letter-spacing:.01em;
+    display:block; width:100%; padding:17px 20px; text-align:center; border-radius:16px;
+    font-size:16px; font-weight:600; letter-spacing:-0.01em;
     background:var(--tinta); color:var(--papel-alto); border:none;
-    transition:background .16s ease, transform .16s ease;
+    box-shadow:0 6px 16px -6px rgba(27,31,36,.5);
+    transition:background .2s cubic-bezier(.16,1,.3,1), transform .2s cubic-bezier(.16,1,.3,1), box-shadow .2s ease;
   }
-  .btn:hover{ background:#0c1712; }
-  .btn:active{ transform:scale(.985); }
-  .btn-rojo{ background:var(--rojo); color:#fff; }
-  .btn-rojo:hover{ background:#8e2317; }
-  .btn-linea{ background:none; color:var(--tinta); border:1.5px solid var(--trama-fuerte); }
-  .btn-linea:hover{ background:var(--papel-hondo); }
+  .btn:hover{ background:#0f1319; box-shadow:0 10px 22px -8px rgba(27,31,36,.55); }
+  .btn:active{ transform:scale(.975); box-shadow:0 3px 10px -6px rgba(27,31,36,.5); }
+  .btn-rojo{ background:var(--rojo); color:#fff; box-shadow:0 6px 18px -6px rgba(166,43,28,.55); }
+  .btn-rojo:hover{ background:#8e2317; box-shadow:0 10px 24px -8px rgba(166,43,28,.6); }
+  .btn-linea{ background:none; color:var(--tinta); border:1.5px solid var(--trama-fuerte); box-shadow:none; }
+  .btn-linea:hover{ background:var(--papel-hondo); box-shadow:none; }
 
   /* casillas de formulario (sin íconos ilustrativos) */
   .casilla{
     display:flex; align-items:center; gap:13px; width:100%;
-    padding:15px 16px; border:1px solid var(--trama-fuerte); background:var(--papel-alto);
-    margin-bottom:9px; transition:border-color .14s ease, background .14s ease;
+    padding:16px 17px; border:1.5px solid var(--trama); background:var(--papel-alto);
+    border-radius:14px; margin-bottom:10px;
+    transition:border-color .2s cubic-bezier(.16,1,.3,1), background .2s ease, transform .2s cubic-bezier(.16,1,.3,1);
   }
-  .casilla:hover{ border-color:var(--tinta-2); }
+  .casilla:hover{ border-color:var(--tinta-3); transform:translateY(-1px); }
+  .casilla:active{ transform:scale(.99); }
   .casilla .marca{
-    width:19px; height:19px; border:1.5px solid var(--tinta-2); flex-shrink:0;
+    width:21px; height:21px; border-radius:50%; border:1.5px solid var(--trama-fuerte); flex-shrink:0;
+    transition:background .2s ease, border-color .2s ease;
     display:flex; align-items:center; justify-content:center;
   }
   .casilla .marca svg{ width:12px; height:12px; color:var(--papel-alto); opacity:0; }
   .casilla.sel{ border-color:var(--azul); background:var(--azul-claro); }
   .casilla.sel .marca{ background:var(--azul); border-color:var(--azul); }
   .casilla.sel .marca svg{ opacity:1; }
-  .casilla .txt{ font-size:15px; font-weight:600; }
-  .casilla .txt small{ display:block; font-size:11.5px; font-weight:400; color:var(--tinta-3); margin-top:1px; }
+  .casilla .txt{ font-size:15px; font-weight:600; letter-spacing:-0.012em; }
+  .casilla .txt small{ display:block; font-size:12px; font-weight:400; color:var(--tinta-3); margin-top:2px; letter-spacing:0; }
 
-  .campo{ border:1px solid var(--trama-fuerte); background:var(--papel-alto); padding:13px 15px; margin-bottom:16px; }
+  .campo{ border:1.5px solid var(--trama); background:var(--papel-alto); border-radius:13px; padding:14px 16px; margin-bottom:16px; }
   .campo .v{ font-size:17px; font-weight:600; }
   .campo .v.mono{ font-size:16px; letter-spacing:.04em; }
 
@@ -310,7 +317,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
   .est.pend .e-t{ color:var(--tinta-3); font-weight:500; }
 
   /* mapa dentro de la app */
-  .mapa-app{ position:relative; overflow:hidden; border:1px solid var(--trama-fuerte); }
+  .mapa-app{ position:relative; overflow:hidden; border:1.5px solid var(--trama); border-radius:14px; }
   .mapa-app img{ width:100%; height:100%; object-fit:cover; }
   .chincheta{ position:absolute; left:50.1%; top:50%; transform:translate(-50%,-50%); }
   .chincheta i{
@@ -329,7 +336,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
   /* visor de cámara */
   .visor{
     position:relative; aspect-ratio:4/3; background:#202824; overflow:hidden;
-    display:flex; align-items:center; justify-content:center;
+    border-radius:16px; display:flex; align-items:center; justify-content:center;
   }
   .visor img{ width:100%; height:100%; object-fit:cover; }
   .visor-marco{ position:absolute; inset:14px; pointer-events:none; }
@@ -345,8 +352,8 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
   .obturador span{ display:block; width:100%; height:100%; border-radius:50%; background:var(--rojo); }
 
   .aviso{
-    padding:13px 15px; background:var(--azul-claro);
-    font-size:12px; color:var(--azul); line-height:1.55;
+    padding:14px 16px; background:var(--azul-claro); border-radius:13px;
+    font-size:12.5px; color:var(--azul); line-height:1.58; letter-spacing:-0.004em;
   }
 
   /* tarjetita de reporte en Mis reportes */
@@ -358,7 +365,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
   .rep-f{ font-size:11px; color:var(--tinta-3); }
   .rep-b{ display:flex; justify-content:space-between; align-items:center; gap:10px; margin-top:4px; }
   .rep-l{ font-size:12.5px; color:var(--tinta-2); }
-  .marbete{ font-size:10px; font-weight:700; letter-spacing:.08em; padding:2px 7px; white-space:nowrap; }
+  .marbete{ font-size:10px; font-weight:700; letter-spacing:.07em; padding:3px 9px; border-radius:999px; white-space:nowrap; }
   .marbete.res{ background:var(--sello); color:var(--papel-alto); }
   .marbete.rev{ background:var(--rojo-claro); color:var(--rojo); border:1px solid var(--rojo); }
   .marbete.aten{ background:var(--papel-hondo); color:var(--tinta-2); border:1px solid var(--trama-fuerte); }
@@ -1046,6 +1053,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 
       </div>
     </div>
+    </div>
 
     <div class="escena-relato" id="relatoOps"></div>
   </div>
@@ -1147,7 +1155,9 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
       var bloques = cont.children;
       if (!bloques.length) return;
 
-      var centro = window.innerHeight / 2;
+      // se mide contra el tercio superior, no contra el centro: así el bloque
+      // activo queda a la altura de la cabecera de la pieza que acompaña
+      var centro = window.innerHeight * 0.34;
       var mejor = null, menor = Infinity;
       for (var i = 0; i < bloques.length; i++){
         var r = bloques[i].getBoundingClientRect();
