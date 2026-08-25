@@ -1,4 +1,4 @@
-# Iniciativa de los 1000 Ojos (1KE)
+# Portal de Denuncias
 
 Presentación de 14 pantallas del sistema de denuncias ciudadanas de emergencias
 para alcaldías de Honduras: 8 de la aplicación del vecino y 6 de la consola de
