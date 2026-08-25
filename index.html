@@ -210,25 +210,59 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
   }
   /* en pantalla chica el teléfono se achica de verdad, no con escala,
      para que quepa junto al relato sin desbordar el ancho */
-  @media (max-width:1000px){
-    /* el alto se ata al de la ventana para que siempre quede sitio al texto
-       que va debajo; el ancho conserva la proporción del aparato */
-    .telefono{
-      height:clamp(430px, 62vh, 600px);
-      width:calc(clamp(430px, 62vh, 600px) * 0.4867);
-      border-radius:44px; padding:8px;
-    }
+  /* teléfono en pantalla media: mismo aparato, más pequeño */
+  @media (max-width:1000px) and (min-width:701px){
+    .telefono{ width:300px; height:616px; border-radius:44px; padding:8px; }
     .tel-pantalla{ border-radius:37px; }
-    .isla{ width:84px; height:25px; top:9px; }
-    .barra-est{ height:44px; padding:12px 22px 0; font-size:12px; }
-    .cuerpo{ padding:0 19px; }
-    .pie{ padding:11px 19px 22px; }
-    .app-tit{ font-size:21px; }
-    .app-sub{ font-size:13px; margin-bottom:16px; }
-    .home-ind{ width:110px; height:4px; bottom:6px; }
-    .tel-boton.vol-a{ top:132px; height:44px; }
-    .tel-boton.vol-b{ top:186px; height:44px; }
-    .tel-boton.pow{ top:164px; height:70px; }
+    .isla{ width:86px; height:26px; top:9px; }
+    .barra-est{ height:46px; padding:13px 24px 0; font-size:12.5px; }
+    .cuerpo{ padding:0 20px; }
+    .pie{ padding:12px 20px 24px; }
+    .tel-boton.vol-a{ top:136px; height:46px; }
+    .tel-boton.vol-b{ top:192px; height:46px; }
+    .tel-boton.pow{ top:170px; height:72px; }
+  }
+
+  /* En un teléfono real no cabe la pantalla completa y su explicación al mismo
+     tiempo, y dibujar el marco de otro aparato se come un tercio del ancho.
+     Aquí se abandona la pieza fija: cada paso es su texto y, debajo, su
+     pantalla entera a todo lo ancho. */
+  @media (max-width:700px){
+    body.apilado .escena-fija{ display:none; }
+    body.apilado .escena-relato{ padding:20px 0 8px; }
+    body.apilado .rel{
+      opacity:1; padding-left:0; margin-bottom:54px; transition:none;
+    }
+    body.apilado .rel:first-child{ margin-top:0; }
+    body.apilado .rel::before{ display:none; }
+    body.apilado .rel-n{ color:var(--azul); }
+    body.apilado .rel-t{ font-size:1.45rem; }
+    body.apilado .rel-d{ max-width:none; }
+
+    .marco{
+      margin-top:20px; border:1px solid var(--trama); border-radius:26px;
+      overflow:hidden; background:var(--papel);
+      box-shadow:0 24px 46px -20px rgba(27,31,36,.26), 0 6px 14px -8px rgba(27,31,36,.12);
+    }
+    .marco .barra-est{
+      height:auto; padding:12px 22px 10px; font-size:11.5px; font-weight:600;
+      color:var(--tinta-3); border-bottom:1px solid var(--trama);
+    }
+    .marco .barra-est .der svg{ height:10px; opacity:.55; }
+    .marco .pant{
+      position:static; display:none; animation:none; height:auto;
+    }
+    .marco .pant.on{ display:flex; animation:none; }
+    .marco .cuerpo{ overflow:visible; padding:22px 22px 0; }
+    .marco .pie{ padding:18px 22px 22px; }
+
+    .marco-ops{ border:none; border-radius:20px; background:var(--mesa); }
+    .marco-ops .ops-pant{ display:none; animation:none; }
+    .marco-ops .ops-pant.on{ display:block; }
+    .marco-ops .ops-mapa{ height:230px; }
+    .marco-ops .ops-cola{ max-height:none; }
+    .marco-ops .ops-doc{ max-height:none; overflow:visible; padding:18px 17px 20px; }
+    .marco-ops .ops-cuerpo{ min-height:0; }
   }
 
   /* pantallas de la app */
@@ -569,6 +603,15 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
     .reserva{ font-size:10px; padding:10px 12px; }
     .ops-pant[data-o="10"] .ops-doc > *:last-child{ order:-1; }
     .ops-foto-pie{ font-size:9.5px; padding:7px 10px; }
+  }
+
+  @media (max-width:700px){
+    /* misma decisión que con el teléfono: fuera el cromo del navegador */
+    .escritorio{ border-radius:20px; box-shadow:0 22px 44px -18px rgba(27,31,36,.3), 0 6px 14px -8px rgba(27,31,36,.16); }
+    .nav-mac{ display:none; }
+    .ops-mapa{ height:150px; }
+    .ops-cola{ max-height:142px; }
+    .ops-doc{ max-height:46vh; padding:15px 15px 17px; }
   }
   @media (max-width:700px){
     .marca-mapa .rot{ display:none; }
@@ -1187,6 +1230,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
   var activo = { relatoApp: 0, relatoOps: 0 };
 
   function sincronizar(){
+    if (document.body.classList.contains('apilado')) return;
     ['relatoApp', 'relatoOps'].forEach(function(id){
       var cont = document.getElementById(id);
       if (!cont) return;
@@ -1224,14 +1268,74 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
     });
   }
 
+  // ---- pantalla angosta: cada paso lleva su pantalla debajo ----
+  // En un teléfono no caben la pantalla y su explicación a la vez, así que en
+  // vez de dejar una pieza fija se mete cada pantalla dentro de su bloque.
+  var ANGOSTO = 700;
+  var apilado = false;
+
+  function apilar(){
+    if (apilado) return;
+    [['relatoApp', '#lienzoApp .pant', 'data-p', true],
+     ['relatoOps', '#lienzoOps .ops-pant', 'data-o', false]].forEach(function(cfg){
+      var cont = document.getElementById(cfg[0]);
+      if (!cont) return;
+      var barra = cont.parentNode.querySelector('.barra-est');
+      Array.prototype.forEach.call(cont.children, function(rel){
+        var n = rel.getAttribute('data-n');
+        var pant = document.querySelector(cfg[1] + '[' + cfg[2] + '="' + n + '"]');
+        if (!pant) return;
+        var marco = document.createElement('div');
+        marco.className = 'marco' + (cfg[3] ? '' : ' marco-ops');
+        if (cfg[3] && barra) marco.appendChild(barra.cloneNode(true));
+        pant.className = cfg[3] ? 'pant on' : 'ops-pant on';
+        marco.appendChild(pant);
+        rel.appendChild(marco);
+      });
+    });
+    document.body.classList.add('apilado');
+    apilado = true;
+  }
+
+  function desapilar(){
+    if (!apilado) return;
+    document.querySelectorAll('.marco').forEach(function(marco){
+      var pant = marco.querySelector('.pant, .ops-pant');
+      if (pant){
+        var esApp = pant.classList.contains('pant');
+        (document.getElementById(esApp ? 'lienzoApp' : 'lienzoOps')).appendChild(pant);
+        pant.className = esApp ? 'pant' : 'ops-pant';
+      }
+      marco.parentNode.removeChild(marco);
+    });
+    document.body.classList.remove('apilado');
+    apilado = false;
+    activo = { relatoApp: 0, relatoOps: 0 };
+    irApp(1); irOps(9);
+    sincronizar();
+  }
+
+  function acomodar(){
+    if (window.innerWidth <= ANGOSTO) apilar(); else desapilar();
+  }
+
   var pendiente = false;
   function alDesplazar(){
-    if (pendiente) return;
+    if (apilado || pendiente) return;
     pendiente = true;
     requestAnimationFrame(function(){ pendiente = false; sincronizar(); });
   }
 
   window.addEventListener('scroll', alDesplazar, { passive: true });
-  window.addEventListener('resize', alDesplazar);
+  window.addEventListener('resize', function(){ acomodar(); alDesplazar(); });
+  window.addEventListener('orientationchange', function(){ setTimeout(acomodar, 60); });
+
+  // matchMedia avisa justo al cruzar el umbral, incluso donde el evento de
+  // redimensionado no llega
+  var umbral = window.matchMedia('(max-width: ' + ANGOSTO + 'px)');
+  if (umbral.addEventListener) umbral.addEventListener('change', acomodar);
+  else if (umbral.addListener) umbral.addListener(acomodar);
+
+  acomodar();
   sincronizar();
 </script>
